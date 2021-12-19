@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-nfs
+spec:
+  capacity:
+    storage: 5Gi              ### pv capacity >= pvc capacity
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany           ### Access Modes: ReadWriteOnce(RWO), ReadWriteMany(RWX), ReadWriteOncePod(RWOP)  https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+  persistentVolumeReclaimPolicy: Recycle  ### https://kubernetes.io/docs/concepts/storage/persistent-volumes/#reclaim-policy
+  storageClassName: nfs-slow
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /data/nfs            ### nfs shared directory
+    server: 192.168.0.240      ### nfs server ip address
+

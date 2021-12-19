@@ -1,0 +1,47 @@
+# es-statefulset.yml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: es
+  namespace: es
+  labels:
+    app: es
+spec:
+  replicas: 3
+  serviceName: es
+  selector:
+    matchLabels:
+      app: es
+  template:
+    metadata:
+      labels:
+        app: es
+    spec:
+      volumes:
+      - name: task-pv-storage
+        persistentVolumeClaim:
+          claimName: task-pvc-claim
+      containers:
+      - name: es
+        volumeMounts:
+        - mountPath: "/usr/share/elasticsearch/data/node"
+          name: task-pv-storage
+        image: elasticsearch:6.8.12
+        env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: discovery.type
+            value: single-node
+        resources:
+          limits:
+            cpu: '1'
+            memory: 2Gi
+          requests:
+            cpu: '1'
+            memory: 2Gi

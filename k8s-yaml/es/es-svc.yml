@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: es
+  name: es-svc
+  namespace: es
+spec:
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+    k8s-app: es
+  sessionAffinity: None
+  type: ClusterIP
+  ports: 
+  - port: 9200
+status:
+  loadBalancer: {}
